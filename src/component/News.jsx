@@ -83,7 +83,7 @@ export class News extends Component {
             articles: this.state.articles.concat(parseData.articles),
             totalResults: parseData.totalResults,
             page: nextPage,
-            loading: false,
+
           });
         } catch (e) {
           console.log(e);
@@ -94,8 +94,8 @@ export class News extends Component {
   render() {
     return (
       <>
-        <h2 className='text-center' >NewZMonk -Top headlines</h2>
-         {this.state.loading===true&&<Spinner/>}
+        <h2 className='text-center' style={{marginTop:"90px"}} >NewZMonk -Top headlines</h2>
+         {this.state.loading &&<Spinner/>}
      <InfiniteScroll
             dataLength={this.state.articles.length}
             next={this.fetchMoreData}
