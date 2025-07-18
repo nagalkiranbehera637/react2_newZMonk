@@ -32,9 +32,9 @@ export class News extends Component {
      
       await this.updateNews()
     }
-    async updateNews(){
+   updateNews=async ()=>{
         //  
-        let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=8d112a857ec6428ba0be260c9733138c&page=${this.state.page}&pageSize=${this.props.pageSize}`
+        let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.Api_key}&page=${this.state.page}&pageSize=${this.props.pageSize}`
         try{
           this.props.setProgress(10)
             this.setState({loading:true})
@@ -71,7 +71,7 @@ export class News extends Component {
     fetchMoreData = async()=>{
       
         const nextPage = this.state.page + 1;
-        const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=8d112a857ec6428ba0be260c9733138c&page=${nextPage}&pageSize=${this.props.pageSize}`;
+        const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.Api_key}&page=${nextPage}&pageSize=${this.props.pageSize}`;
 
         try {
           this.setState({ loading: true });
@@ -95,22 +95,27 @@ export class News extends Component {
     return (
       <>
         <h2 className='text-center' >NewZMonk -Top headlines</h2>
-         
-      <InfiniteScroll
-          dataLength={this.state.articles.length}
-          next={this.fetchMoreData}
-          // style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
-          // inverse={true} //
-          hasMore={this.state.articles.length<this.state.totalResults}
-          loader={<Spinner/>}
-          scrollableTarget="scrollableDiv"
-        >   
+         {this.state.loading===true&&<Spinner/>}
+     <InfiniteScroll
+            dataLength={this.state.articles.length}
+            next={this.fetchMoreData}
+            hasMore={this.state.articles.length < this.state.totalResults}
+            loader={<Spinner />}
+            endMessage={
+              <div style={{ textAlign: 'center', margin: '3rem 0', color: 'gray' }}>
+                <b>Yay! You have seen all the news.</b>
+              </div>
+            }
+          >
+
             <div className='container my-3'>
                   <div className="row">
                       {this.state.articles.map((element)=>{
                           return (
                           <div className="col-md-4 my-3" key={element.url}>  
-                          <NewsItem title={element.title || ""} 
+                          <NewsItem 
+                          Api_key={this.props.Api_key}
+                          title={element.title || ""} 
                           description={element.description || ""} 
                           imageUrl={element.urlToImage} 
                           newsUrl={element.url}
