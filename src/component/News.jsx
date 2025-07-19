@@ -69,32 +69,37 @@ export class News extends Component {
     // }
     // }
   fetchMoreData = async () => {
-        const nextPage = this.state.page + 1;
-        const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.Api_key}&page=${nextPage}&pageSize=${this.props.pageSize}`;
+  const nextPage = this.state.page + 1;
+  const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.Api_key}&page=${nextPage}&pageSize=${this.props.pageSize}`;
 
-        try {
-          this.setState({ loading: true });
-          const data = await fetch(url);
-          const parseData = await data.json();
-          console.log(parseData);
+  try {
+    const data = await fetch(url);
+    const parseData = await data.json();
+    console.log("Fetched page:", nextPage, parseData);
 
-          this.setState({
-            articles: this.state.articles.concat(parseData.articles),
-            totalResults: parseData.totalResults,
-            page: nextPage,
+    this.setState((prevState) => ({
+      articles: prevState.articles.concat(parseData.articles),
+      totalResults: parseData.totalResults,
+      page: nextPage,
+    }), () => {
+      // Now the state is updated, so log inside the callback
+      console.log("Articles length:", this.state.articles.length);
+      console.log("Total results:", this.state.totalResults);
+      console.log("Page:", this.state.page);
+    });
 
-          });
-        } catch (e) {
-          console.log(e);
-        }
-    };
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 
 
   render() {
     return (
       <>
         <h2 className='text-center' style={{marginTop:"90px"}} >NewZMonk -Top headlines</h2>
-         {this.state.loading &&<Spinner/>}
+         {/* {this.state.loading &&<Spinner/>} */}
      <InfiniteScroll
             dataLength={this.state.articles.length}
             next={this.fetchMoreData}
